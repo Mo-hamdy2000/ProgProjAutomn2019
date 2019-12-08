@@ -12,3 +12,8 @@ typedef struct {
 	int score;
 	int noOfMoves;
 } Player;
+typedef struct
+{
+    int x;
+    int y;
+}point;
