@@ -1,6 +1,5 @@
-#include <stdio.h>
 #include <windows.h>
-#include <box.h>
+#include <entities.h>
 
 #define LESS_INTENSITY 0x0080 // background color is intensified.
 
@@ -13,7 +12,7 @@ void printUpperSides(int size ,Box boxes[]){
 	GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi );
 	for(int i = 0; i < size; i++)
 	{
-		printf("##");
+		printf("%c%c", 219, 219);
 		if(boxes[i].upperSide == 1)
 		{
 			SetConsoleTextAttribute (GetStdHandle(STD_OUTPUT_HANDLE), BACKGROUND_BLUE);
@@ -24,8 +23,8 @@ void printUpperSides(int size ,Box boxes[]){
 		}
 		printf("            ");
 		SetConsoleTextAttribute (GetStdHandle(STD_OUTPUT_HANDLE), csbi.wAttributes);
-		if(i!= 0){
-			printf("##");
+		if(i == size-1){
+			printf("%c%c", 219, 219);
 		}
 	}
 }
@@ -68,7 +67,7 @@ void printBoxBody(int size ,Box boxes[]){
 				SetConsoleTextAttribute (GetStdHandle(STD_OUTPUT_HANDLE), BACKGROUND_RED);
 				break;
 		}
-		if(i != 0)
+		if(i == size-1)
 		{
 			printf("  ");
 		}
@@ -84,7 +83,7 @@ void printLowerSides(int size ,Box boxes[]){
 	GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi );
 	for(int i = 0; i < size; i++)
 	{
-		printf("##");
+		printf("%c%c", 219, 219);
 		if(boxes[i].lowerSide == 1)
 		{
 			SetConsoleTextAttribute (GetStdHandle(STD_OUTPUT_HANDLE), BACKGROUND_BLUE);
@@ -95,25 +94,29 @@ void printLowerSides(int size ,Box boxes[]){
 		}
 		printf("            ");
 		SetConsoleTextAttribute (GetStdHandle(STD_OUTPUT_HANDLE), csbi.wAttributes);
-		if(i!= 0){
-			printf("##");
+		if(i ==  size-1){
+			printf("%c%c", 219, 219);
 		}
 	}
 }
 
 // This function takes a 2D array of boxes and its size the it prints each row in the array using the functions above respectively.
 void printBoard(int size, Box board[size][size]){
+	printf("\t\t\t\t\t\ta             b             c\n");
 	for(int i = 0; i < size; i++)
 	{
+		printf("\t\t\t\t\t\t");
 		printUpperSides(size, board[i]);
-		printf("\n");
+		printf("\t%d\n", i);
 		for (int k = 0; k < 4; k++)
 		{
+			printf("\t\t\t\t\t\t");
 			printBoxBody(size ,board[i]);
 			printf("\n");
 		}
-		if(i != 0)
+		if(i == size-1)
 		{
+			printf("\t\t\t\t\t\t");
 			printLowerSides(size, board[i]);
 			printf("\n");
 		}
