@@ -1,4 +1,4 @@
-Point find2NotSidedBox (int size , Box Boxes [size][size]){
+Point findNot2SidedBox (int size , Box Boxes [size][size]){
 	Point point;
 	for(int i=0 ; i<size ; i++){
 		for (int j=0 ; j<size ; j++){
