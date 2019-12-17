@@ -1,21 +1,20 @@
 #include <windows.h>
+#define LESS_INTENSITY 0x0080 // background color is intensified.
 
-void printGameMenu(int undoFlag)
+void printGameMenu(int undoFlag, int redoFlag, int undoCounter, int noOfMovesPlayed)
 {
 	printf("\t\t\t\t\t\tEnter: s:Save\te:Exit");
-	if(undoFlag == 1)
+	if(undoFlag == 1 && undoCounter > -1)
 	{
 		printf("\tu:Undo");
 	}
-	else if(undoFlag == 0)
+	if(redoFlag == 1 && undoCounter < noOfMovesPlayed)
 	{
 		printf("\tr:Redo");
 	}
 	printf("\n\n");
 }
 
-
-#define LESS_INTENSITY 0x0080 // background color is intensified.
 
 void printIntro()
 {
@@ -52,6 +51,60 @@ void printBanner()
 	printf("\t\t\t\t88888888Y^'     `^YbbdP^'    ^Y888  `^YbbdP^'     `Y8888P^  Yb     88888888P^    `^YbbdP^'  8P'     `Y8  `^Ybbd8^'  `^YbbdP^'  \n\n\n\n");
 }
 
+void printPlayerSelection(int playerTurn)
+{
+	if(playerTurn == 1)
+	{
+		printf("\n\n\n\n\n\n\n");
+		printf("\t\t\t\t  1111111   \n");
+		printf("\t\t\t\t 1::::::1   \n");
+		printf("\t\t\t\t1:::::::1   \n");
+		printf("\t\t\t\t111:::::1   \n");
+		printf("\t\t\t\t   1::::1   \n");
+		printf("\t\t\t\t   1::::1   \n");
+		printf("\t\t\t\t   1::::1   \n");
+		printf("\t\t\t\t   1::::1   \n");
+		printf("\t\t\t\t   1::::1   \n");
+		printf("\t\t\t\t   1::::1   \n");
+		printf("\t\t\t\t   1::::1   \n");
+		printf("\t\t\t\t   1::::1   \n");
+		printf("\t\t\t\t111::::::111\n");
+		printf("\t\t\t\t1::::::::::1\n");
+		printf("\t\t\t\t1::::::::::1\n");
+		printf("\t\t\t\t111111111111\n");
+	}
+	else
+	{
+		printf("\n\n\n\n\n\n\n");
+		printf("\t\t\t\t 222222222222222    \n");
+		printf("\t\t\t\t2:::::::::::::::22  \n");
+		printf("\t\t\t\t2::::::222222:::::2 \n");
+		printf("\t\t\t\t2222222     2:::::2 \n");
+		printf("\t\t\t\t            2:::::2 \n");
+		printf("\t\t\t\t            2:::::2 \n");
+		printf("\t\t\t\t         2222::::2  \n");
+		printf("\t\t\t\t    22222::::::22   \n");
+		printf("\t\t\t\t  22::::::::222     \n");
+		printf("\t\t\t\t 2:::::22222        \n");
+		printf("\t\t\t\t2:::::2             \n");
+		printf("\t\t\t\t2:::::2             \n");
+		printf("\t\t\t\t2:::::2       222222\n");
+		printf("\t\t\t\t2::::::2222222:::::2\n");
+		printf("\t\t\t\t2::::::::::::::::::2\n");
+		printf("\t\t\t\t22222222222222222222\n");
+	}
+}
+
+void playerSelection(int playerTurn)
+{
+	for(int i = 0; i < 10+playerTurn; i++)
+	{
+		system("cls");
+		printPlayerSelection(i%2+1);
+		Sleep(100);
+	}
+	Sleep(500);
+}
 
 // This function takes a row of boxes and its size (no. of boxes in it) and print the upper line  of each box respectively.
 // The row is an array of boxes.
