@@ -432,13 +432,17 @@ int getRand(int lower, int upper)
 void start2PlayersGame(int sizeOfBoard, Box board[sizeOfBoard][sizeOfBoard], Player players[], int playerTurn, int totalRemainingLines, int gameTime)
 {
 	time_t startTime = time(NULL);
+	point undoSequence[totalRemainingLines][2];
+	int undoCounter = -1;
 	int errorFlag = 1;
 	int undoFlag = -1;
+	int redoFlag = -1;
+	int noOfMovesPlayed = 0;
 	while(totalRemainingLines > 0)
 	{
 		system("cls");
 		printBoard(sizeOfBoard,board, players, playerTurn, totalRemainingLines, time(NULL) - startTime + gameTime);
-		point point1, point2, undoPoint1, undoPoint2;
+		point point1, point2;
 		switch(errorFlag)
 		{
 			case -1:
@@ -455,7 +459,7 @@ void start2PlayersGame(int sizeOfBoard, Box board[sizeOfBoard][sizeOfBoard], Pla
 				break;
 		}
 		errorFlag = 1;
-		printGameMenu(undoFlag);
+		printGameMenu(undoFlag, redoFlag, undoCounter, noOfMovesPlayed);
 		printf("\t\t\t\t\t\tEnter the first point: (x, y)\n\t\t\t\t\t\t");
 		if(scanf("%d %d", &point1.x, &point1.y) != 2)
 		{
@@ -467,18 +471,19 @@ void start2PlayersGame(int sizeOfBoard, Box board[sizeOfBoard][sizeOfBoard], Pla
 				save(sizeOfBoard, board, players, playerTurn, totalRemainingLines, time(NULL) - startTime + gameTime, 2);
 				break;
 			}
-			else if((keychar == 'u' || keychar == 'U') && undoFlag == 1)
+			else if((keychar == 'u' || keychar == 'U') && undoFlag == 1 && undoCounter > -1)
 			{
 				//Undo
-				undo(undoPoint1, undoPoint2, sizeOfBoard, players, board, &playerTurn, &totalRemainingLines);
-				undoFlag = 0;
+				undo(undoSequence[undoCounter][0], undoSequence[undoCounter][1], sizeOfBoard, players, board, &playerTurn, &totalRemainingLines);
+				undoCounter--;
+				redoFlag = 1;
 				continue;
 			}
-			else if((keychar == 'r' || keychar == 'R') && undoFlag == 0)
+			else if((keychar == 'r' || keychar == 'R') && redoFlag == 1 && undoCounter < noOfMovesPlayed)
 			{
 				//Redo
-				pointToLines(undoPoint1, undoPoint2, sizeOfBoard, players, board, &playerTurn, &totalRemainingLines);
-				undoFlag = 1;
+				pointToLines(undoSequence[undoCounter+1][0], undoSequence[undoCounter+1][1], sizeOfBoard, players, board, &playerTurn, &totalRemainingLines);
+				undoCounter++;
 				continue;
 			}
 			else if(keychar == 'e' || keychar == 'E')
@@ -499,18 +504,19 @@ void start2PlayersGame(int sizeOfBoard, Box board[sizeOfBoard][sizeOfBoard], Pla
 				save(sizeOfBoard, board, players, playerTurn, totalRemainingLines, time(NULL) - startTime +gameTime, 2);
 				break;
 			}
-			else if((keychar == 'u' || keychar == 'U') && undoFlag == 1)
+			else if((keychar == 'u' || keychar == 'U') && undoFlag == 1 && undoCounter > -1)
 			{
 				//Undo
-				undo(undoPoint1, undoPoint2, sizeOfBoard, players, board, &playerTurn, &totalRemainingLines);
-				undoFlag = 0;
+				undo(undoSequence[undoCounter][0], undoSequence[undoCounter][1], sizeOfBoard, players, board, &playerTurn, &totalRemainingLines);
+				undoCounter--;
+				redoFlag = 1;
 				continue;
 			}
-			else if((keychar == 'r' || keychar == 'R') && undoFlag == 0)
+			else if((keychar == 'r' || keychar == 'R') && redoFlag == 1 && undoCounter < noOfMovesPlayed)
 			{
 				//Redo
-				pointToLines(undoPoint1, undoPoint2, sizeOfBoard, players, board, &playerTurn, &totalRemainingLines);
-				undoFlag = 1;
+				pointToLines(undoSequence[undoCounter+1][0], undoSequence[undoCounter+1][1], sizeOfBoard, players, board, &playerTurn, &totalRemainingLines);
+				undoCounter++;
 				continue;
 			}
 			else if(keychar == 'e' || keychar == 'E')
@@ -525,8 +531,10 @@ void start2PlayersGame(int sizeOfBoard, Box board[sizeOfBoard][sizeOfBoard], Pla
 			errorFlag = pointToLines(point1, point2, sizeOfBoard, players, board, &playerTurn, &totalRemainingLines);
 			if(errorFlag == 0)
 			{
-				undoPoint1 = point1;
-				undoPoint2 = point2;
+				noOfMovesPlayed++;
+				undoCounter++;
+				undoSequence[undoCounter][0] = point1;
+				undoSequence[undoCounter][1] = point2;
 				undoFlag = 1;
 			}
 		}
@@ -538,7 +546,7 @@ void start2PlayersGame(int sizeOfBoard, Box board[sizeOfBoard][sizeOfBoard], Pla
 		int winner;
 		if(players[0].score == players[1].score)
 		{
-			printf("Draw\n");
+			printf("\t\t\t\t\t\tDraw\n");
 			loadLeaderboard();
 			printf("\t\t\t\t\t\tPress Enter To Exit\n\t\t\t\t\t\t");
 			getchar();
@@ -568,11 +576,14 @@ void start2PlayersGame(int sizeOfBoard, Box board[sizeOfBoard][sizeOfBoard], Pla
 void start1PlayerGame(int sizeOfBoard, Box board[sizeOfBoard][sizeOfBoard], Player players[], int playerTurn, int totalRemainingLines, int gameTime)
 {
 	time_t startTime = time(NULL);
+	point undoSequence[totalRemainingLines][2];
 	int errorFlag = 1;
 	int undoFlag = -1;
+	int redoFlag = -1;
 	int compValidFlag;
-	int undoCounter = 0;
-	point point1, point2, undoPoints[4];
+	int undoCounter = -1;
+	int noOfMovesPlayed = 0;
+	point point1, point2;
 	while(totalRemainingLines > 0)
 	{
 		system("cls");
@@ -587,9 +598,10 @@ void start1PlayerGame(int sizeOfBoard, Box board[sizeOfBoard][sizeOfBoard], Play
 				point1 = points[0];
 				point2 = points[1];
 				pointToLines(point1, point2, sizeOfBoard, players, board, &playerTurn, &totalRemainingLines);
-				undoPoints[undoCounter%4] = point1;
-				undoPoints[undoCounter%4+1] = point2;
-				undoCounter += 2;
+				noOfMovesPlayed++;
+				undoCounter++;
+				undoSequence[undoCounter][0] = point1;
+				undoSequence[undoCounter][1] = point2;
 				continue;
 			}
 			if(findNot2SidedBox(sizeOfBoard, board, points) == 1)
@@ -597,9 +609,10 @@ void start1PlayerGame(int sizeOfBoard, Box board[sizeOfBoard][sizeOfBoard], Play
 				point1 = points[0];
 				point2 = points[1];
 				pointToLines(point1, point2, sizeOfBoard, players, board, &playerTurn, &totalRemainingLines);
-				undoPoints[undoCounter%4] = point1;
-				undoPoints[undoCounter%4+1] = point2;
-				undoCounter += 2;
+				noOfMovesPlayed++;
+				undoCounter++;
+				undoSequence[undoCounter][0] = point1;
+				undoSequence[undoCounter][1] = point2;
 				continue;
 			}
 			while(compValidFlag != 0)
@@ -612,9 +625,10 @@ void start1PlayerGame(int sizeOfBoard, Box board[sizeOfBoard][sizeOfBoard], Play
 				if(compValidFlag == 1)
 				{
 					compValidFlag = pointToLines(point1, point2, sizeOfBoard, players, board, &playerTurn, &totalRemainingLines);
-					undoPoints[undoCounter%4] = point1;
-					undoPoints[undoCounter%4+1] = point2;
-					undoCounter += 2;
+					noOfMovesPlayed++;
+					undoCounter++;
+					undoSequence[undoCounter][0] = point1;
+					undoSequence[undoCounter][1] = point2;
 				}
 			}
 			continue;
@@ -635,7 +649,7 @@ void start1PlayerGame(int sizeOfBoard, Box board[sizeOfBoard][sizeOfBoard], Play
 				break;
 		}
 		errorFlag = 1;
-		printGameMenu(undoFlag);
+		printGameMenu(undoFlag, redoFlag, undoCounter, noOfMovesPlayed);
 		printf("\t\t\t\t\t\tEnter the first point: (x, y)\n\t\t\t\t\t\t");
 		if(scanf("%d %d", &point1.x, &point1.y) != 2)
 		{
@@ -647,19 +661,27 @@ void start1PlayerGame(int sizeOfBoard, Box board[sizeOfBoard][sizeOfBoard], Play
 				save(sizeOfBoard, board, players, playerTurn, totalRemainingLines, time(NULL) - startTime + gameTime, 1);
 				break;
 			}
-			else if((keychar == 'u' || keychar == 'U') && undoFlag == 1)
+			else if((keychar == 'u' || keychar == 'U') && undoFlag == 1 && undoCounter > -1)
 			{
 				//Undo
-				undo(undoPoints[(undoCounter+2)%4], undoPoints[((undoCounter+2)%4)+1], sizeOfBoard, players, board, &playerTurn, &totalRemainingLines);
-				undo(undoPoints[undoCounter%4], undoPoints[(undoCounter%4)+1], sizeOfBoard, players, board, &playerTurn, &totalRemainingLines);
-				undoFlag = 0;
+				do
+				{
+					undo(undoSequence[undoCounter][0], undoSequence[undoCounter][1], sizeOfBoard, players, board, &playerTurn, &totalRemainingLines);
+					undoCounter--;
+				}
+				while(playerTurn != 1);
+				redoFlag = 1;
 				continue;
 			}
-			else if((keychar == 'r' || keychar == 'R') && undoFlag == 0)
+			else if((keychar == 'r' || keychar == 'R') && redoFlag == 1 && undoCounter < noOfMovesPlayed)
 			{
 				//Redo
-				pointToLines(undoPoints[undoCounter%4], undoPoints[(undoCounter%4)+1], sizeOfBoard, players, board, &playerTurn, &totalRemainingLines);
-				undoFlag = 1;
+				do
+				{
+					pointToLines(undoSequence[undoCounter+1][0], undoSequence[undoCounter+1][1], sizeOfBoard, players, board, &playerTurn, &totalRemainingLines);
+					undoCounter++;
+				}
+				while(playerTurn != 1);
 				continue;
 			}
 			else if(keychar == 'e' || keychar == 'E')
@@ -680,19 +702,27 @@ void start1PlayerGame(int sizeOfBoard, Box board[sizeOfBoard][sizeOfBoard], Play
 				save(sizeOfBoard, board, players, playerTurn, totalRemainingLines, time(NULL) - startTime +gameTime, 1);
 				break;
 			}
-			else if((keychar == 'u' || keychar == 'U') && undoFlag == 1)
+			else if((keychar == 'u' || keychar == 'U') && undoFlag == 1 && undoCounter > -1)
 			{
 				//Undo
-				undo(undoPoints[(undoCounter+2)%4], undoPoints[((undoCounter+2)%4)+1], sizeOfBoard, players, board, &playerTurn, &totalRemainingLines);
-				undo(undoPoints[undoCounter%4], undoPoints[(undoCounter%4)+1], sizeOfBoard, players, board, &playerTurn, &totalRemainingLines);
-				undoFlag = 0;
+				do
+				{
+					undo(undoSequence[undoCounter][0], undoSequence[undoCounter][1], sizeOfBoard, players, board, &playerTurn, &totalRemainingLines);
+					undoCounter--;
+				}
+				while(playerTurn != 1);
+				redoFlag = 1;
 				continue;
 			}
-			else if((keychar == 'r' || keychar == 'R') && undoFlag == 0)
+			else if((keychar == 'r' || keychar == 'R') && redoFlag == 1 && undoCounter < noOfMovesPlayed)
 			{
 				//Redo
-				pointToLines(undoPoints[undoCounter%4], undoPoints[(undoCounter%4)+1], sizeOfBoard, players, board, &playerTurn, &totalRemainingLines);
-				undoFlag = 1;
+				do
+				{
+					pointToLines(undoSequence[undoCounter+1][0], undoSequence[undoCounter+1][1], sizeOfBoard, players, board, &playerTurn, &totalRemainingLines);
+					undoCounter++;
+				}
+				while(playerTurn != 1);
 				continue;
 			}
 			else if(keychar == 'e' || keychar == 'E')
@@ -707,9 +737,10 @@ void start1PlayerGame(int sizeOfBoard, Box board[sizeOfBoard][sizeOfBoard], Play
 			errorFlag = pointToLines(point1, point2, sizeOfBoard, players, board, &playerTurn, &totalRemainingLines);
 			if(errorFlag == 0)
 			{
-				undoPoints[undoCounter%4] = point1;
-				undoPoints[undoCounter%4+1] = point2;
-				undoCounter += 2;
+				noOfMovesPlayed++;
+				undoCounter++;
+				undoSequence[undoCounter][0] = point1;
+				undoSequence[undoCounter][1] = point2;
 				undoFlag = 1;
 			}
 		}
@@ -721,7 +752,7 @@ void start1PlayerGame(int sizeOfBoard, Box board[sizeOfBoard][sizeOfBoard], Play
 		int winner;
 		if(players[0].score == players[1].score)
 		{
-			printf("Draw\n");
+			printf("\t\t\t\t\t\tDraw\n");
 			loadLeaderboard();
 			printf("\t\t\t\t\t\tPress Enter To Exit\n\t\t\t\t\t\t");
 			getchar();
