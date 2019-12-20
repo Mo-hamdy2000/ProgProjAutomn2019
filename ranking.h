@@ -1,6 +1,9 @@
+//#include "entities.h"
+#include <strings.h>
 #define LEADERBOARD_SIZE 10
 
 void updateLeaderBoard(int line, Player player);
+
 // Function for loading and printing players in the "leaderBoard" file.
 void loadLeaderboard()
 {
@@ -40,7 +43,7 @@ void loadLeaderboard()
 	//Finally it prints players name with their scores ordered descendingly.
 	for (int i = LEADERBOARD_SIZE - 1; i >= 0 ; i--)
 	{
-		printf("1. %s %d\n", players[i].name, players[i].score);
+		printf("\t\t\t\t\t\t%d. %s\t\t%d\n", LEADERBOARD_SIZE - i, players[i].name, players[i].score);
 	}
 }
 
@@ -128,4 +131,15 @@ void updateLeaderBoard(int line, Player player)
     remove("leaderBoard.txt");
     // Rename temporary file as original file.
     rename("temp.txt", "leaderBoard.txt");
+}
+
+void initializeLeaderBoardFile()
+{
+	FILE *boardFile;
+	boardFile  = fopen("leaderBoard.txt", "w");
+	for(int i = 0; i < 10; i ++)
+	{
+		fprintf(boardFile, "%s %d\n", "-----------", 0);
+	}
+	fclose(boardFile);
 }
