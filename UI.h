@@ -111,7 +111,7 @@ void playerSelection(int playerTurn)
 // The line color depend on Box.upperSide value where 0 indicates no line & 1 indicates blue line (1st player) & 2 indicates red line (2nd player).
 void printUpperSides(int size ,Box boxes[]){
 	CONSOLE_SCREEN_BUFFER_INFO csbi;
-	GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi );
+	GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
 	for(int i = 0; i < size; i++)
 	{
 		printf("%c%c", 219, 219);
@@ -125,7 +125,8 @@ void printUpperSides(int size ,Box boxes[]){
 		}
 		printf("            ");
 		SetConsoleTextAttribute (GetStdHandle(STD_OUTPUT_HANDLE), csbi.wAttributes);
-		if(i == size-1){
+		if(i == size-1)
+		{
 			printf("%c%c", 219, 219);
 		}
 	}
@@ -222,7 +223,7 @@ void printBoard(int size, Box board[size][size], Player players[], int playerTur
 	{
 		printf("%d             ", i);
 	}
-	printf("%d   y\n\n", size);
+	printf("%d    y\n\n", size);
 	for(int i = 0; i < size; i++)
 	{
 		printf("\t\t\t\t\t\t");
@@ -263,8 +264,10 @@ int printMainMenu()
 	printf("\t\t\t\t\t\t1. Start Game\n");
 	printf("\t\t\t\t\t\t2. Load Game\n");
 	printf("\t\t\t\t\t\t3. Top 10 players\n");
-	printf("\t\t\t\t\t\t4. Exit\n\t\t\t\t\t\t");
-	while((scanf("%d", &choice) != 1) || choice > 4 || choice < 1)
+	printf("\t\t\t\t\t\t4. How to play\n");
+	printf("\t\t\t\t\t\t5. Credits\n");
+	printf("\t\t\t\t\t\t6. Exit\n\t\t\t\t\t\t");
+	while((scanf("%d", &choice) != 1) || choice > 6 || choice < 1)
 	{
 		scanf("%c", &skipper);
 	}
@@ -288,7 +291,7 @@ int printGameSubMenu1()
 	}
 	else
 	{
-		return 3;
+		return 5;
 	}
 }
 //Prints Sub-menu and return game mode player vs player or player vs computer.
@@ -330,4 +333,30 @@ void printLoadSubMenu(char fileName[])
 			strcpy(fileName, "File3.txt");
 			break;
 	}
+}
+
+void printHowToPlay()
+{
+	printf("\t\t\t\t\t\tHow the game works:\n");
+	printf("\t\t\t\t\t\tWhen the grid is loaded the program asks the user to enter the first point and the second point that represent the line that the user want to play \n");
+	printf("\t\t\t\t\t\tHow to enter the points:\n");
+	printf("\t\t\t\t\t\tThe x coordinate of the point starts from 0 and every single point toward right increase the x coordinate by 1.\n");
+	printf("\t\t\t\t\t\tThe y coordinate of the point starts from 0 and every single point downwards increase the y coordinate by 1.\n");
+	printf("\t\t\t\t\t\tGame rules:\n");
+	printf("\t\t\t\t\t\tObject of the board game: Take more boxes than your opponent. You move by connecting two dots with a line.\n");
+	printf("\t\t\t\t\t\tWhen you place the last wall of a single square (box), the box is yours.\n");
+	printf("\t\t\t\t\t\tThe players move in turn, but whenever a player takes a box (s)he must move again. The player with the most boxes wins. \n");
+	printf("\t\t\t\t\t\tConnecting dots: You connect two dots by entering the coordinate of the 2 points representing line as mentioned above.\n");
+	printf("\t\t\t\t\t\tTaking boxes: When all four of the lines around a single box are in place, the player who made the last move owns the box.\n");
+	printf("\t\t\t\t\t\tThe box is marked in that player color and (s)he must move again.\n");
+	printf("\t\t\t\t\t\tEnd of the board game: The game is finished when all connections have been made and all boxes have been taken. The player who owns most boxes wins.\t\t\t\t\t\t\n");
+}
+
+void printCredits()
+{
+	printf("\t\t\t\t\t\tCredits\n");
+	printf("\t\t\t\t\t\tThis program is designed by:\n");
+	printf("\t\t\t\t\t\tTernary Error Team\n");
+	printf("\t\t\t\t\t\tShehab Mohamed Saad\n\t\t\t\t\t\tMomen Ibrahim Fawzy \n\t\t\t\t\t\tMo\'men Mohamed Hamdy\n");
+	printf("\t\t\t\t\t\tThis is CSED 2023.\n\t\t\t\t\t\t");
 }
