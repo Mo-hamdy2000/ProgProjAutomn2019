@@ -45,6 +45,8 @@ void save (int size, Box Boxes[size][size], Player players[], int playerTurn, in
     fprintf(Save, "%i\n", totalRemainingLines);
     fprintf(Save, "%i\n", gameTime);
     fclose(Save);
+	printf("\t\t\t\t\t\tSaved !!");
+	Sleep(1500);
 }
 
 int loadGameMode(int *gameMode, char fileName[])
