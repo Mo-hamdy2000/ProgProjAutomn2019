@@ -91,6 +91,22 @@ int main(void)
 		}
 		else if(choice == 4)
 		{
+			system("cls");
+			printBanner();
+			printHowToPlay();
+			getchar();
+			getchar();
+		}
+		else if(choice == 5)
+		{
+			system("cls");
+			printBanner();
+			printCredits();
+			getchar();
+			getchar();
+		}
+		else if(choice == 6)
+		{
 			break;
 		}
 	}
