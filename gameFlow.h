@@ -357,7 +357,7 @@ int undo(point a,point p,int sizeOfBoard, Player players[], Box board[][sizeOfBo
 }
 
 ///this function check the Validity Of Points
-///it returns 0 if the points are not valid
+///it returns -4 if the points are not valid
 ///it return -1 if the points are the same point
 ///it return -2 if one of the points is out of range
 int checkValidityOfPoints(point a,point p,int sizeOfBoard)
@@ -446,16 +446,16 @@ void start2PlayersGame(int sizeOfBoard, Box board[sizeOfBoard][sizeOfBoard], Pla
 		switch(errorFlag)
 		{
 			case -1:
-				printf("\t\t\t\t\t\tIt's the same point!!\n");
+				printf("\t\t\t\t\t\t***It's the same point!!\n");
 				break;
 			case -2:
-				printf("\t\t\t\t\t\tOne of the points is out of range!!\n");
+				printf("\t\t\t\t\t\t***One of the points is out of range!!\n");
 				break;
 			case -3:
-				printf("\t\t\t\t\t\tThis line is already taken!!\n");
+				printf("\t\t\t\t\t\t***This line is already taken!!\n");
 				break;
 			case -4:
-				printf("\t\t\t\t\t\tNot valid points!!\n");
+				printf("\t\t\t\t\t\t***Not valid points!!\n");
 				break;
 		}
 		errorFlag = 1;
@@ -469,7 +469,7 @@ void start2PlayersGame(int sizeOfBoard, Box board[sizeOfBoard][sizeOfBoard], Pla
 			{
 				//Save Function
 				save(sizeOfBoard, board, players, playerTurn, totalRemainingLines, time(NULL) - startTime + gameTime, 2);
-				break;
+				continue;
 			}
 			else if((keychar == 'u' || keychar == 'U') && undoFlag == 1 && undoCounter > -1)
 			{
@@ -625,10 +625,13 @@ void start1PlayerGame(int sizeOfBoard, Box board[sizeOfBoard][sizeOfBoard], Play
 				if(compValidFlag == 1)
 				{
 					compValidFlag = pointToLines(point1, point2, sizeOfBoard, players, board, &playerTurn, &totalRemainingLines);
-					noOfMovesPlayed++;
-					undoCounter++;
-					undoSequence[undoCounter][0] = point1;
-					undoSequence[undoCounter][1] = point2;
+					if(compValidFlag == 0)
+					{
+						noOfMovesPlayed++;
+						undoCounter++;
+						undoSequence[undoCounter][0] = point1;
+						undoSequence[undoCounter][1] = point2;
+					}
 				}
 			}
 			continue;
